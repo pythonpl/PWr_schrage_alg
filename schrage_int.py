@@ -5,6 +5,14 @@ import sys
 from queue import PriorityQueue
 
 
+###########################################################################################################
+# argumenty wywołania programu:
+# python3 schrage_int.py arg1 arg2 arg3
+# arg1 - uruchomienie wersji klasycznej (arg1 = 0) / na kolejce priorytetowej (arg1 = 1)
+# arg2 - wykres w kolejności numeru zadań (arg2 = 0) / wykres w kolejności wykonywania zadań (arg2 = 1)
+# arg3 - nazwa pliku zawierającego dane
+###########################################################################################################
+
 def main():
 
 	data = np.array
@@ -15,7 +23,7 @@ def main():
 	q = toSingleMatrix(k[:, 2])	
 
 	visualize(r, p, q, int(sys.argv[1]))
-
+tplotlib
 def visualize(r, p, q, pq=0):
 
 	if pq == 0:
