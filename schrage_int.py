@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import sys
+from queue import PriorityQueue
+
 
 def main():
 
@@ -15,11 +17,14 @@ def main():
 	p = toSingleMatrix(k[:, 1])
 	q = toSingleMatrix(k[:, 2])	
 
-	visualize(r, p, q)
+	visualize(r, p, q, int(sys.argv[1]))
 
-def visualize(r, p, q):
+def visualize(r, p, q, pq=0):
 
-	results = schrageAlgorithm(r[:], p[:], q[:])
+	if pq == 0:
+		results = schrageAlgorithm(r[:], p[:], q[:])
+	else:
+		results = schrageAlgorithmPQ(r[:], p[:], q[:])
 	queue = results[0]
 	Cmax = results[1]
 
@@ -45,7 +50,7 @@ def visualize(r, p, q):
 	ind = np.arange(N)
 	width = 0.4
 	
-	order = getCorrectGraphOrder(r, p, q, queue, offset, 1)
+	order = getCorrectGraphOrder(r, p, q, queue, offset, int(sys.argv[2]))
 	
 	r_ = order[0]
 	p_ = order[1]
@@ -64,6 +69,7 @@ def visualize(r, p, q):
 	plt.ylim([-width/2,len(r)-1+width/2])
 	plt.xlim([0, Cmax])
 	plt.show()
+
 
 def getCorrectGraphOrder(r, p, q, queue, offset, option):
 	if option == 0:
@@ -95,13 +101,14 @@ def toSingleMatrix(list):
 	return result
 
 def ProcessData(data):
-    data = np.genfromtxt('SCHRAGE2.DAT',
+    data = np.genfromtxt(sys.argv[3],
 
                      skip_header=1,
                      dtype=int,
                      delimiter="")
 
     return data
+
 
 def schrageAlgorithm(r, p, q):
 	t = 0
@@ -164,6 +171,58 @@ def schrageAlgorithm(r, p, q):
 
 	#print "Cmax: "+str(Cmax)
 	#print "Queue: "
+	print("Cmax: "+str(Cmax))
+	print(PI)
+	return (PI, Cmax)
+
+
+def schrageAlgorithmPQ(r, p, q):
+	t = 0
+	k = 0
+	Cmax = 0
+
+	N = [] 
+	N_size = 0
+	G = PriorityQueue()
+	PI = []
+
+	for i in range(0, len(r)):
+		N.append(1);
+
+	N_size = len(N)
+
+	while(not G.empty() or N_size!=0):
+
+		minimum = sys.maxsize
+		argmin = -1
+
+		for i in range(0, len(r)):
+			if(N[i] == 1 and r[i] < minimum):
+				minimum = r[i]
+				argmin = i
+
+		while(N_size!=0 and minimum <= t):
+			N[argmin] = -1
+			N_size-=1
+			G.put((-q[argmin], argmin))
+
+			minimum = sys.maxsize
+
+			for i in range(0, len(r)):
+				if(N[i] == 1 and r[i] < minimum):
+					minimum = r[i]
+					argmin = i
+
+		if(G.empty()):
+			t = minimum
+		else:
+			e = G.get()
+			PI.append(e[1])
+
+			t+= p[e[1]]
+
+			Cmax = max(Cmax, t+q[e[1]])
+
 	print("Cmax: "+str(Cmax))
 	print(PI)
 	return (PI, Cmax)
