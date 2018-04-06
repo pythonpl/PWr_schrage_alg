@@ -4,12 +4,11 @@ import matplotlib
 import sys
 from queue import PriorityQueue
 
-
 ###########################################################################################################
 # argumenty wywołania programu:
 # python3 schrage_int.py arg1 arg2 arg3
 # arg1 - uruchomienie wersji klasycznej (arg1 = 0) / na kolejce priorytetowej (arg1 = 1)
-# arg2 - wykres w kolejności numeru zadań (arg2 = 0) / wykres w kolejności wykonywania zadań (arg2 = 1)
+# arg2 - wykres w kolejności numeracji zadań (arg2 = 0) / wykres w kolejności wykonywania zadań (arg2 = 1)
 # arg3 - nazwa pliku zawierającego dane
 ###########################################################################################################
 
@@ -23,7 +22,9 @@ def main():
 	q = toSingleMatrix(k[:, 2])	
 
 	visualize(r, p, q, int(sys.argv[1]))
-tplotlib
+
+
+# uruchomienie odpowiedniej wersji algorytmu i zwizualizowanie wyniku na wykresie
 def visualize(r, p, q, pq=0):
 
 	if pq == 0:
@@ -40,7 +41,7 @@ def visualize(r, p, q, pq=0):
 	offset[queue[0]] = 0
 	for i in range (1, len(queue)):
 		e = stack - r[queue[i]]
-		int(e)
+		e = int(e)
 		if(e>=0):
 			offset[queue[i]] = e
 			stack = stack + p[queue[i]]
@@ -75,8 +76,8 @@ def visualize(r, p, q, pq=0):
 	plt.xlim([0, Cmax])
 	plt.show()
 
-
-def getCorrectGraphOrder(r, p, q, queue, offset, option):
+# Ustawienie danych do wykresu w pożądanej kolejności
+def getCorrectGraphOrder(r, p, q, queue, offset, option=0):
 	if option == 0:
 		queue_ = []		
 		for i in range(0, len(r)):
@@ -94,10 +95,9 @@ def getCorrectGraphOrder(r, p, q, queue, offset, option):
 		q_.append(q[queue[i]])
 		offset_.append(offset[queue[i]])
 
-	
-
 	return [r_, p_, q_, offset_, queue]
 	
+# przetworzenie danych
 def toSingleMatrix(list):
 	result = []
 
@@ -105,6 +105,7 @@ def toSingleMatrix(list):
 		result.append(list[i])
 	return result
 
+# Wczytywanie danych
 def ProcessData(data):
     data = np.genfromtxt(sys.argv[3],
 
@@ -114,7 +115,7 @@ def ProcessData(data):
 
     return data
 
-
+# algorytm Schrage'a w wersji klasycznej
 def schrageAlgorithm(r, p, q):
 	t = 0
 	k = 0
@@ -140,6 +141,8 @@ def schrageAlgorithm(r, p, q):
 				minimum = r[i]
 				argmin = i
 
+		print(N)
+
 		while(N_size!=0 and minimum <= t):
 			N[argmin] = -1
 			N_size-=1
@@ -160,27 +163,23 @@ def schrageAlgorithm(r, p, q):
 			ind = -1
 			for i in range(0, len(G)):
 				A = G[i]
-				#print "A: "+str(A[0])+" "+str(A[1])
 				if maximum<A[0]:
 					maximum = A[0]
 					maxID = A[1]
 					ind = i
 
 			G.remove(G[ind])
-			#print "Adding to PI: ("+str(maximum)+", "+str(maxID)+")"
 			PI.append(maxID)
 
 			t+= p[maxID]
 
 			Cmax = max(Cmax, t+q[maxID])
 
-	#print "Cmax: "+str(Cmax)
-	#print "Queue: "
 	print("Cmax: "+str(Cmax))
 	print(PI)
 	return (PI, Cmax)
 
-
+# algorytm Schrage'a w wersji na kolejce priorytetowej
 def schrageAlgorithmPQ(r, p, q):
 	t = 0
 	k = 0
