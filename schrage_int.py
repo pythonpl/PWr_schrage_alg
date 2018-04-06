@@ -8,10 +8,7 @@ from queue import PriorityQueue
 def main():
 
 	data = np.array
-	r = [2, 3, 6, 10, 15]
-	p = [3, 2, 2, 1, 1]
-	q = [5, 4, 2, 1, 1]	
-	
+
 	k = ProcessData(data)
 	r = toSingleMatrix(k[:, 0])
 	p = toSingleMatrix(k[:, 1])
